@@ -439,6 +439,14 @@ class CommandHandler extends AkairoHandler {
             return await this.runCommand(message, command, args);
         } catch (err) {
             this.emitError(err, message, command);
+            if (this.cooldowns.has(message.author.id)) {
+                if (this.cooldowns.get(message.author.id)[command.id]) {
+
+                    delete this.cooldowns.get(message.author.id)[command.id]
+                
+                    return null;
+                } 
+            }
             return null;
         } finally {
             if (key) command.locker.delete(key);
@@ -738,7 +746,9 @@ class CommandHandler extends AkairoHandler {
         }
 
         const entry = this.cooldowns.get(id)[command.id];
-
+        if (!entry) { 
+            return false;
+        }
         if (entry.uses >= command.ratelimit) {
             const end = this.cooldowns.get(message.author.id)[command.id].end;
             const diff = end - message.createdTimestamp;
