@@ -1,4 +1,4 @@
-const { Client } = require('discord.js');
+const { Client, constants } = require('discord.js');
 const ClientUtil = require('./ClientUtil');
 
 /**
@@ -10,7 +10,9 @@ const ClientUtil = require('./ClientUtil');
  */
 class AkairoClient extends Client {
     constructor(options = {}, clientOptions) {
-        super(clientOptions || options);
+
+        clientOptions = clientOptions ? clientOptions : constants.DefaultOptions;
+        super(clientOptions);
 
         const { ownerID = '' } = options;
 
